@@ -16,9 +16,33 @@ export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user
                         <Image src={logo} alt="Logo" fill priority className="dark:filter dark:invert" />
                     </Link>
                     <div className="hidden md:flex gap-10 font-semibold">
-                        <Link href="/">Home</Link>
-                        <Link href="/about">About</Link>
-                        <Link href="/contact">Contact</Link>
+                        <Link
+                            href="/"
+                            className="relative group transition"
+                        >
+                            <span className="transition-colors duration-200 group-hover:text-primary">
+                                Home
+                            </span>
+                            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link
+                            href="/about"
+                            className="relative group transition"
+                        >
+                            <span className="transition-colors duration-200 group-hover:text-primary">
+                                About
+                            </span>
+                            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        <Link
+                            href="/contact"
+                            className="relative group transition"
+                        >
+                            <span className="transition-colors duration-200 group-hover:text-primary">
+                                Contact
+                            </span>
+                            <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
                     </div>
                 </div>
 
@@ -40,17 +64,46 @@ export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user
                     </button>
                 </div>
 
-                <div className="hidden md:block">
+                <div className="hidden justify-end md:block">
                     <HeaderAuth user={user} />
                 </div>
             </div>
 
             {menuOpen && (
                 <div className="md:hidden px-5 pb-4 space-y-2">
-                    <Link href="/" onClick={() => setMenuOpen(false)} className="block">Home</Link>
-                    <Link href="/about" onClick={() => setMenuOpen(false)} className="block">About</Link>
-                    <Link href="/contact" onClick={() => setMenuOpen(false)} className="block">Contact</Link>
-                    <HeaderAuth user={user} />
+                    <Link
+                        href="/"
+                        onClick={() => setMenuOpen(false)}
+                        className="block relative group py-1"
+                    >
+                        <span className="transition-colors duration-200 group-hover:text-primary">
+                            Home
+                        </span>
+                        <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link
+                        href="/about"
+                        onClick={() => setMenuOpen(false)}
+                        className="block relative group py-1"
+                    >
+                        <span className="transition-colors duration-200 group-hover:text-primary">
+                            About
+                        </span>
+                        <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <Link
+                        href="/contact"
+                        onClick={() => setMenuOpen(false)}
+                        className="block relative group py-1"
+                    >
+                        <span className="transition-colors duration-200 group-hover:text-primary">
+                            Contact
+                        </span>
+                        <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </Link>
+                    <div className="flex justify-between items-center mt-4 border-t pt-4 border-foreground/10">
+                        <HeaderAuth user={user} />
+                    </div>
                 </div>
             )}
         </nav>

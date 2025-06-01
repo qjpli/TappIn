@@ -1,10 +1,10 @@
-// components/dashboard/dashboard-content.tsx
+// components/dashboard/my-account.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Users, BarChart2, Settings, BookOpen, Layers, CreditCard } from "lucide-react";
-import ProfilesSection from "./sections/profiles";
+import { LayoutDashboard , BarChart2, Settings, BookOpen, CreditCard } from "lucide-react";
+import DashboardSection from "./sections/dashboard";
 // import ContactsSection from "./sections/contacts";
 // import AnalyticsSection from "./sections/analytics";
 // import GroupsSection from "./sections/groups";
@@ -13,23 +13,21 @@ import ProfilesSection from "./sections/profiles";
 // import OrderCardsSection from "./sections/order-cards";
 
 const sidebarMenu = [
-  { label: "Profiles", icon: User, key: "profiles" },
-  { label: "Contacts", icon: Users, key: "contacts" },
+  { label: "Dashboard", icon: LayoutDashboard, key: "dashboard" },
   { label: "Analytics", icon: BarChart2, key: "analytics" },
-  { label: "Groups", icon: Layers, key: "groups" },
-  { label: "Settings", icon: Settings, key: "settings" },
   { label: "Tutorials", icon: BookOpen, key: "tutorials" },
   { label: "Order more cards", icon: CreditCard, key: "order-cards" },
+  { label: "Settings", icon: Settings, key: "settings" },
 ];
 
-export default function DashboardContent({ user }: { user: any }) {
-  const [active, setActive] = useState("profiles");
+export default function MyAccountContent({ user }: { user: any }) {
+  const [active, setActive] = useState("dashboard");
 
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
       <aside className="flex flex-col py-8 px-2 md:px-6 border-r bg-card w-16 md:w-64 transition-all duration-200">
-        <div className="hidden md:block font-semibold text-lg mb-8">Dashboard</div>
+        <div className="hidden md:block font-semibold text-lg mb-8">My Account</div>
         <nav className="flex flex-col gap-2 text-foreground">
           {sidebarMenu.map(({ label, icon: Icon, key }) => (
             <button
@@ -52,7 +50,7 @@ export default function DashboardContent({ user }: { user: any }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col px-4 md:px-12 py-6 md:py-10">
-        {active === "profiles" && <ProfilesSection user={user} />}
+        {active === "dashboard" && <DashboardSection user={user} />}
         {/* {active === "contacts" && <ContactsSection />}
         {active === "analytics" && <AnalyticsSection />}
         {active === "groups" && <GroupsSection />}
