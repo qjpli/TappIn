@@ -1,3 +1,4 @@
+@import 'nprogress/nprogress.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +11,7 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 0 0% 18.04%;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -63,7 +64,16 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* NProgress custom color */
+#nprogress .bar {
+  background: #2416ba !important; /* Change to your primary color */
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px #2416ba, 0 0 5px #2416ba !important;
 }
