@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/submit-button";
+import { createClient } from "@/utils/supabase/client";
 
 interface ActivateCardModalProps {
   isOpen: boolean;
@@ -12,15 +13,66 @@ interface ActivateCardModalProps {
 }
 
 export default function ActivateCardModal({ isOpen, onClose }: ActivateCardModalProps) {
+  const supabase = createClient();
   if (!isOpen) return null;
 
   const [cardUuid, setCardUuid] = useState("");
   const [activationCode, setActivationCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onClose();
+    setLoading(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    try {
+      // Call the stored procedure via RPC
+      const { data, error } = await supabase
+        .rpc('activate_service_card', {
+          p_user_id: ((await supabase.auth.getUser()).data.user ?? {}).id ?? '', // current user id from supabase auth
+          p_card_uuid: cardUuid,
+          p_activation_code: activationCode,
+        });
+
+      if (error) {
+        setErrorMsg(`Activation failed: ${error.message}`);
+        setLoading(false);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        setErrorMsg("No response from server.");
+        setLoading(false);
+        return;
+      }
+
+      // data is an array of rows, pick first row's success and message
+      const { success, message } = data[0];
+      if (!success) {
+        setErrorMsg(message);
+        setLoading(false);
+        return;
+      }
+
+      setSuccessMsg(message);
+      setLoading(false);
+      setCardUuid("");
+      setActivationCode("");
+
+      setTimeout(() => {
+        onClose();
+        setSuccessMsg(null);
+      }, 2000);
+    } catch (err: any) {
+      setErrorMsg(`Unexpected error: ${err.message || err.toString()}`);
+      setLoading(false);
+    }
   };
+
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -55,7 +107,11 @@ export default function ActivateCardModal({ isOpen, onClose }: ActivateCardModal
               required
             />
           </div>
-          <SubmitButton pendingText="Activating...">
+
+          {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+          {successMsg && <p className="text-green-500">{successMsg}</p>}
+
+          <SubmitButton disabled={loading} pendingText="Activating...">
             Activate Card
           </SubmitButton>
         </form>
