@@ -4,12 +4,13 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import DOMPurify from "isomorphic-dompurify";
 
 export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
+  const email = DOMPurify.sanitize(formData.get("email")?.toString() ?? '');
   const password = formData.get("password")?.toString();
-  const activationCode = formData.get("activationCode")?.toString();
-  const codeUuid = formData.get("codeUuid")?.toString();        
+  const activationCode = DOMPurify.sanitize(formData.get("activationCode")?.toString() ?? '');
+  const codeUuid = DOMPurify.sanitize(formData.get("codeUuid")?.toString() ?? '');        
 
   if (!email || !password || !activationCode || !codeUuid) {
     return encodedRedirect(
@@ -56,9 +57,17 @@ export const signUpAction = async (formData: FormData) => {
 };
 
 export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
+  const email = DOMPurify.sanitize(formData.get("email") as string);
   const password = formData.get("password") as string;
   const supabase = await createClient();
+
+  if(!email || !password) {
+    return encodedRedirect(
+      "error",
+      "/sign-in",
+      "All fields are required (email, password)",
+    );
+  }
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -73,7 +82,7 @@ export const signInAction = async (formData: FormData) => {
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
+  const email = DOMPurify.sanitize(formData.get("email")?.toString() ?? '');
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
   const callbackUrl = formData.get("callbackUrl")?.toString();

@@ -2,13 +2,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import HeaderAuth from "./header-auth";
 import logo from "@/public/images/tappIn-logo-no-bg.png";
 
 export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user: any }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
-    return (
+     const pathname = usePathname();
+     const hideNavbarRoutes = ["/rate-limit"];
+     const showNavbar = !hideNavbarRoutes.includes(pathname);
+
+    return showNavbar ? (
         <nav className="w-full border-b border-b-foreground/10">
             <div className="w-full max-w-7xl mx-auto flex justify-between items-center h-24 px-5">
                 <div className="flex items-center gap-12">
@@ -107,5 +112,5 @@ export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user
                 </div>
             )}
         </nav>
-    );
+    ) : null;
 }
