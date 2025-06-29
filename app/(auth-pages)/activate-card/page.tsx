@@ -28,9 +28,9 @@ export default async function Signup(props: {
             Enter your card's UUID and activation code to get started.
           </p>
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-            <Label htmlFor="cardUuid">Card UUID</Label>
+            <Label htmlFor="codeUuid">Card UUID</Label>
             <Input
-              name="cardUuid"
+              name="codeUuid"
               placeholder="Enter your card's UUID"
               required
             />

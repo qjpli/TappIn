@@ -1,11 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, Edit2, Eye, PlusCircle, PlayCircle } from "lucide-react";
 import ActivateCardModal from "@/components/modals/activate-card-modal";
+import { createClient } from "@/utils/supabase/client";
 
-export default function DashboardSection({ user, cards = [] }: { user: any, cards?: any[] }) {
+type Card = {
+  id: string;
+  name: string;
+  status: true | false | boolean; 
+  service_type: string;
+  lastUsed?: string | null;
+};
+
+export default function DashboardSection({ user }: { user: any }) {
   const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      setLoading(true);
+      setError(null);
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from("service_activation")
+        .select("*")
+        .eq("used_by", user.id);
+
+      if (error) {
+        console.error("Error fetching cards:", error);
+        setError("Failed to load cards. Please try again.");
+      } else {
+        setCards(data || []);
+      }
+
+      setLoading(false);
+    };
+
+    if (user?.id) {
+      fetchCards();
+    }
+  }, [user?.id]);
 
   return (
     <>
@@ -17,7 +55,15 @@ export default function DashboardSection({ user, cards = [] }: { user: any, card
             <CreditCard className="w-5 h-5 text-primary" /> Your Cards
           </h2>
           <div className="flex flex-col gap-6">
-            {cards.length === 0 ? (
+            {loading ? (
+              <div className="text-muted-foreground bg-muted/50 rounded-lg p-6 text-center">
+                Loading cards...
+              </div>
+            ) : error ? (
+              <div className="text-destructive bg-destructive/10 rounded-lg p-6 text-center">
+                {error}
+              </div>
+            ) : cards.length === 0 ? (
               <div className="text-muted-foreground bg-muted/50 rounded-lg p-6 text-center">
                 You have no cards yet.
               </div>
@@ -29,17 +75,17 @@ export default function DashboardSection({ user, cards = [] }: { user: any, card
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <CreditCard className="w-8 h-8 text-primary" />
-                    <span className="font-semibold text-lg truncate">{card.name}</span>
+                    <span className="font-semibold text-lg truncate">{card.service_type}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm flex-shrink-0">
                     <span
                       className={
-                        card.status === "active"
+                        card.status === true
                           ? "text-green-600 font-medium"
                           : "text-yellow-600 font-medium"
                       }
                     >
-                      {card.status.charAt(0).toUpperCase() + card.status.slice(1)}
+                      {card.status ? 'Active' : 'Inactive'}
                     </span>
                     <span className="mx-2 text-muted-foreground">•</span>
                     <span className="text-xs text-muted-foreground">
@@ -59,6 +105,7 @@ export default function DashboardSection({ user, cards = [] }: { user: any, card
             )}
           </div>
         </section>
+
         {/* Quick Actions */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
@@ -77,6 +124,7 @@ export default function DashboardSection({ user, cards = [] }: { user: any, card
             </button>
           </div>
         </section>
+
         {/* Recent Activity */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
@@ -85,7 +133,12 @@ export default function DashboardSection({ user, cards = [] }: { user: any, card
           </div>
         </section>
       </div>
-      <ActivateCardModal isOpen={isActivateModalOpen} onClose={() => setIsActivateModalOpen(false)} />
+
+      {/* Modals */}
+      <ActivateCardModal
+        isOpen={isActivateModalOpen}
+        onClose={() => setIsActivateModalOpen(false)}
+      />
     </>
   );
 }

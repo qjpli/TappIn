@@ -8,34 +8,50 @@ import { redirect } from "next/navigation";
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+  const activationCode = formData.get("activationCode")?.toString();
+  const codeUuid = formData.get("codeUuid")?.toString();        
 
-  if (!email || !password) {
+  if (!email || !password || !activationCode || !codeUuid) {
     return encodedRedirect(
       "error",
-      "/sign-up",
-      "Email and password are required",
+      "/activate-card",
+      "All fields are required (email, password, activation code, code ID)",
     );
   }
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
-  });
+  const origin = (await headers()).get("origin") ?? "";
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/signing-up-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""}`,
+      },
+      body: JSON.stringify({ email, password, activationCode, codeUuid }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return encodedRedirect("error", "/activate-card", data.message || "Sign-up failed");
+    }
+
+    const supabase = await createClient();
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      return encodedRedirect("error", "/activate-card", error.message);
+    }
+
+    return encodedRedirect("success", "/my-account", data.message || "Sign-up successful. Please check your email.");
+  } catch (err: any) {
+    console.error("Unexpected error:", err);
+    return encodedRedirect("error", "/activate-card", err);
   }
 };
 

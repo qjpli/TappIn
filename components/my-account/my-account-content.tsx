@@ -43,8 +43,8 @@ export default function MyAccountContent({ user }: { user: any }) {
           ))}
         </nav>
         <div className="mt-auto pt-8 flex flex-col gap-2">
-          <Link href="#" className="text-xs text-muted-foreground hidden md:block">My OVOU Profile</Link>
-          <Link href="#" className="text-xs text-muted-foreground hidden md:block">Log out</Link>
+          {/* <Link href="#" className="text-xs text-muted-foreground hidden md:block">My OVOU Profile</Link>
+          <Link href="#" className="text-xs text-muted-foreground hidden md:block">Log out</Link> */}
         </div>
       </aside>
 
