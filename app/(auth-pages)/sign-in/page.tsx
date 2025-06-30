@@ -5,10 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
+export const metadata = {
+  title: "tappIn - Sign In",
+};
+
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
   return (
     <>
+    
       <div className="flex items-center justify-center w-screen py-12">
         <form className="flex flex-col w-full max-w-xs">
           <h1 className="text-2xl font-medium mb-2">Sign in</h1>

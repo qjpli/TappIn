@@ -30,7 +30,6 @@ function getIP(request: NextRequest): string {
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Handle redirect away from /rate-limit if not flagged
   if (pathname === "/rate-limit") {
     const isRateLimited = request.cookies.get("rate_limited")?.value;
     if (!isRateLimited) {
@@ -41,7 +40,6 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // ✅ Apply rate limiting to /sign-in and /activate-card
   if (pathname.startsWith("/sign-in") || pathname.startsWith("/activate-card")) {
     const ip = getIP(request);
     try {

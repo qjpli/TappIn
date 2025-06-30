@@ -2,6 +2,10 @@ import Hero from "@/components/hero";
 import { Button } from "@/components/ui/button";
 import { User, QrCode, Link2, Smartphone } from "lucide-react";
 
+export const metadata = {
+  title: "tappIn - Home",
+};
+
 export default async function Home() {
   return (
     <>

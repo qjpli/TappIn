@@ -9,9 +9,9 @@ import logo from "@/public/images/tappIn-logo-no-bg.png";
 export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user: any }) {
     const [menuOpen, setMenuOpen] = useState(false);
 
-     const pathname = usePathname();
-     const hideNavbarRoutes = ["/rate-limit"];
-     const showNavbar = !hideNavbarRoutes.includes(pathname);
+    const pathname = usePathname();
+    const hideNavbarRoutes = ["/rate-limit"];
+    const showNavbar = !hideNavbarRoutes.includes(pathname);
 
     return showNavbar ? (
         <nav className="w-full border-b border-b-foreground/10">
@@ -35,7 +35,7 @@ export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user
                             className="relative group transition"
                         >
                             <span className="transition-colors duration-200 group-hover:text-primary">
-                                About
+                                About Us
                             </span>
                             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                         </Link>
@@ -44,7 +44,7 @@ export default function Navbar({ hasEnvVars, user }: { hasEnvVars: boolean, user
                             className="relative group transition"
                         >
                             <span className="transition-colors duration-200 group-hover:text-primary">
-                                Contact
+                                Contact Us
                             </span>
                             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                         </Link>
