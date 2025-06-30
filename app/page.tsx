@@ -16,7 +16,7 @@ export default async function Home() {
         <section className="w-full max-w-6xl mx-auto mb-24">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-8 relative">
             See Our{" "}
-            <span className="relative z-10">Advantages</span>
+            <span className="relative z-10">Advantagesd</span>
             <span
               className="absolute left-1/2 -translate-x-1/2 bottom-2 z-0 w-48 h-3 bg-[#2416ba] rounded-full opacity-50"
               style={{ marginBottom: "-0.5rem", marginLeft: "5rem", transform: "translateX(-50%) rotate(-2deg)" }}
